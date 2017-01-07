@@ -2,6 +2,10 @@
 
 ArduinoSynth is a custom Arduino image to power a board with 8 LEDs (corresponding with Middle C up to the next octave C) and a buzzer. The board will play the correct frequency on the buzzer and light up the corresponding light - thus creating a simple synthesizer.
 
+## Arduino Wiring
+
+![Arduino Wiring](wiring.jpg)
+
 ## Bluetooth
 
 The board uses an [Adafruit Bluefruit LE UART Friend chip](https://learn.adafruit.com/introducing-the-adafruit-bluefruit-le-uart-friend/introduction). This software uses a custom provided API dedicated to this chip. All other BT chips will need to use a different set of APIs.
