@@ -10,6 +10,7 @@
 #include "Adafruit_BluefruitLE_UART.h"
 
 #define PACKET_NOTE_LEN                (4)
+#define PACKET_OCTAVE_LEN              (4)
 
 //    READ_BUFSIZE            Size of the read buffer for incoming packets
 #define READ_BUFSIZE                    (20)
@@ -75,6 +76,8 @@ uint8_t readPacket(Adafruit_BLE *ble, uint16_t timeout)
   while (timeout--) {
     if (replyidx >= 20) break;
     if ((packetbuffer[1] == 'N') && (replyidx == PACKET_NOTE_LEN))
+      break;
+    if ((packetbuffer[1] == 'O') && (replyidx == PACKET_OCTAVE_LEN))
       break;
 
     while (ble->available()) {

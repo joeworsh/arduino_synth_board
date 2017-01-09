@@ -24,32 +24,36 @@
 #define  DATA_PIN     11
 #define  BUZZER_PIN   10
 
-#define  C4_LED        1  // LEDs are represented as bit shifted int values for shift register
-#define  D4_LED        2
-#define  E4_LED        4
-#define  F4_LED        8
-#define  G4_LED        16
-#define  A4_LED        32
-#define  B4_LED        64
-#define  C5_LED        128
+#define  C_LED        1  // LEDs are represented as bit shifted int values for shift register
+#define  D_LED        2
+#define  E_LED        4
+#define  F_LED        8
+#define  G_LED        16
+#define  A_LED        32
+#define  B_LED        64
+#define  C2_LED       128
 
 /*
- * Frequencies in Hz of notes played on the arduino board.
+ * Frequencies in Hz of notes played on the arduino board. The frequencies are
+ * in the lowest octave. The octaves can range from 0 to 8. The correct value of
+ * frequency in octave is: freq * 2^octave
  */
-#define  C4_FREQ  262  // middle C
-#define  D4_FREQ  294
-#define  E4_FREQ  330
-#define  F4_FREQ  349
-#define  G4_FREQ  392
-#define  A4_FREQ  440
-#define  B4_FREQ  494
-#define  C5_FREQ  523
+#define  C_FREQ  16.35
+#define  D_FREQ  18.35
+#define  E_FREQ  20.60
+#define  F_FREQ  21.83
+#define  G_FREQ  24.50
+#define  A_FREQ  27.50
+#define  B_FREQ  30.87
 
 // function prototypes over in packetparser.cpp
 uint8_t readPacket(Adafruit_BLE *ble, uint16_t timeout);
 
 // the packet buffer
 extern uint8_t packetbuffer[];
+
+// track the current octave of the notes
+double octave = 4.0; // on start up use the middle octave
 
 // Create the bluefruit object, either software serial...uncomment these lines
 SoftwareSerial bluefruitSS = SoftwareSerial(BLUEFRUIT_SWUART_TXD_PIN, BLUEFRUIT_SWUART_RXD_PIN);
@@ -111,6 +115,11 @@ void loop()
     uint8_t note = packetbuffer[2];
     playNote(note);
   }
+  
+  // if an octave packet is sent, set the octave for the system
+  if (packetbuffer[1] == 'O') {
+    octave = (double)packetbuffer[2]; 
+  }
 }
 
 ///
@@ -121,36 +130,37 @@ void playNote(uint8_t noteIndex)
   switch(noteIndex)
   {
     case 1:
-      led = C4_LED;
-      freq = C4_FREQ;
+      led = C_LED;
+      freq = (int) (C_FREQ * pow(2, octave));
       break;
     case 2:
-      led = D4_LED;
-      freq = D4_FREQ;
+      led = D_LED;
+      freq = (int) (D_FREQ * pow(2.0, octave));
       break;
     case 3:
-      led = E4_LED;
-      freq = E4_FREQ;
+      led = E_LED;
+      freq = (int) (E_FREQ * pow(2.0, octave));
       break;
     case 4:
-      led = F4_LED;
-      freq = F4_FREQ;
+      led = F_LED;
+      freq = (int) (F_FREQ * pow(2.0, octave));
       break;
     case 5:
-      led = G4_LED;
-      freq = G4_FREQ;
+      led = G_LED;
+      freq = (int) (G_FREQ * pow(2.0, octave));
       break;
     case 6:
-      led = A4_LED;
-      freq = A4_FREQ;
+      led = A_LED;
+      freq = (int) (A_FREQ * pow(2.0, octave));
       break;
     case 7:
-      led = B4_LED;
-      freq = B4_FREQ;
+      led = B_LED;
+      freq = (int) (B_FREQ * pow(2.0, octave));
       break;
     case 8:
-      led = C5_LED;
-      freq = C5_FREQ;
+      led = C2_LED;
+      // the next higher octave
+      freq = (int) (C_FREQ * pow(2.0, octave + 1));
       break;
   }
   
