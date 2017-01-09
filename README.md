@@ -15,7 +15,14 @@ The board uses an [Adafruit Bluefruit LE UART Friend chip](https://learn.adafrui
 Any Bluetooth LE UART compatable device can connect to the ArduinoSynth to control which note is currently active. The board acts in the server role and receives very simple packets in the following format:
 
 ```
+// play a note
 buffer[0] = '!'; // indicate to the board the start of packet
 buffer[1] = 'N'; // indicate to the board that the packet is a Note packet
 buffer[2] = <byte value from 1 to 8 indicating which note to turn on>;
+buffer[3] = ~checksum; // the binary inverted value of the checksum of the packet
+
+// change octave
+buffer[0] = '!'; // indicate to the board the start of packet
+buffer[1] = 'O'; // indicate to the board that the packet is an Octave packet
+buffer[2] = <byte value from 0 to 8 indicating which octave to set>;
 buffer[3] = ~checksum; // the binary inverted value of the checksum of the packet
